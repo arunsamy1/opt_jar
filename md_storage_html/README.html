@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>md_storage_html — User Guide</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body { height: 100%; margin: 0; }
+
+    body {
+      font-family: sans-serif;
+      font-size: 17px;
+      line-height: 1.8;
+      color: #222;
+      background: #fff;
+      display: flex;
+    }
+
+    /* ── Left sidebar ── */
+    #sidebar {
+      width: 230px;
+      min-width: 230px;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      overflow-y: auto;
+      background: #f5f5f5;
+      border-right: 1px solid #d0d0d0;
+      display: flex;
+      flex-direction: column;
+    }
+    #sidebar-header {
+      padding: 14px 16px 10px;
+      border-bottom: 1px solid #d0d0d0;
+      background: #ececec;
+      font-weight: bold;
+      font-size: 0.95em;
+      color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    #hide-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95em;
+      color: #666;
+      padding: 0 2px;
+      line-height: 1;
+    }
+    #hide-btn:hover { color: #000; }
+    #sidebar nav { padding: 8px 0; }
+    #sidebar nav a {
+      display: block;
+      padding: 5px 16px;
+      text-decoration: none;
+      font-size: 0.9em;
+      color: #0366d6;
+      border-left: 3px solid transparent;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #sidebar nav a:hover { background: #e0e0e0; }
+    #sidebar nav a.active {
+      background: #ddeeff;
+      border-left-color: #0366d6;
+      font-weight: bold;
+      color: #0366d6;
+    }
+
+    /* show button when sidebar is hidden */
+    #show-btn {
+      display: none;
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 10;
+      background: #ececec;
+      border: 1px solid #d0d0d0;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.95em;
+      padding: 4px 8px;
+      color: #444;
+    }
+    #show-btn:hover { background: #e0e0e0; }
+
+    /* ── Main content ── */
+    #content {
+      flex: 1;
+      min-width: 0;
+      padding: 40px 48px;
+      overflow-y: auto;
+    }
+
+    h1 { font-size: 2em; border-bottom: 3px solid #0366d6; padding-bottom: 8px; margin-top: 0; }
+    h2 { font-size: 1.4em; border-bottom: 1px solid #ddd; padding-bottom: 4px; margin-top: 40px; color: #0366d6; }
+    h3 { font-size: 1.1em; margin-top: 24px; color: #333; }
+    p  { margin: 0.5em 0 1em; }
+
+    code {
+      background: #f4f4f4;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 0.92em;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 14px 18px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 0.92em;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+    }
+    th {
+      background: #0366d6;
+      color: #fff;
+      text-align: left;
+      padding: 8px 12px;
+    }
+    td { padding: 8px 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+    tr:nth-child(even) td { background: #f9f9f9; }
+    .note {
+      background: #fff8e1;
+      border-left: 4px solid #f0a500;
+      padding: 10px 16px;
+      margin: 16px 0;
+      border-radius: 0 4px 4px 0;
+    }
+    .tip {
+      background: #e8f5e9;
+      border-left: 4px solid #2e7d32;
+      padding: 10px 16px;
+      margin: 16px 0;
+      border-radius: 0 4px 4px 0;
+    }
+    ul { padding-left: 24px; }
+    li { margin-bottom: 6px; }
+    a { color: #0366d6; }
+
+    @media(max-width: 700px) {
+      #sidebar { display: none; }
+      #show-btn { display: block; }
+      #content { padding: 20px 16px; font-size: 15px; }
+      h1 { font-size: 1.6em; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Sidebar ── -->
+<button id="show-btn" onclick="showSidebar()" title="Show contents">&#9654;</button>
+<div id="sidebar">
+  <div id="sidebar-header">
+    &#128196; Contents
+    <button id="hide-btn" onclick="hideSidebar()" title="Hide">&#9664;</button>
+  </div>
+  <nav>
+    <a href="#requirements">Requirements</a>
+    <a href="#layout">Application Layout</a>
+    <a href="#toolbar">Toolbar Buttons</a>
+    <a href="#shortcuts">Keyboard Shortcuts</a>
+    <a href="#filetree">File Tree (Left Pane)</a>
+    <a href="#editing">Editing (Right Pane)</a>
+    <a href="#loading">Loading an Existing Folder</a>
+    <a href="#exporting">Exporting to HTML</a>
+    <a href="#config">Configuration File</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</div>
+
+<!-- ── Content ── -->
+<div id="content">
+
+<h1>md_storage_html &mdash; User Guide</h1>
+<p>
+  <strong>md_storage_html</strong> is a desktop Java application for managing Markdown files
+  and exporting them as a linked HTML website. It provides a two-pane editor, a file/folder tree,
+  and one-click HTML export with an auto-generated index page. <em>Version 1.2.</em>
+</p>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="requirements">Requirements</h2>
+<ul>
+  <li>Java 11 or later</li>
+  <li>All <code>.java</code> source files in the same directory</li>
+</ul>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="layout">Application Layout</h2>
+<p>The window is divided into three areas:</p>
+<ul>
+  <li><strong>Toolbar</strong> — action buttons across the top, with a folder path info bar directly below them.</li>
+  <li><strong>Left pane</strong> — file/folder tree (the Index).</li>
+  <li><strong>Right pane</strong> — Markdown text editor for the selected file.</li>
+</ul>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="toolbar">Toolbar Buttons</h2>
+<table>
+  <tr><th>Button</th><th>What it does</th></tr>
+  <tr><td><code>Save</code></td><td>Writes all files and folders from the tree to the MD folder on disk, preserving the tree hierarchy.</td></tr>
+  <tr><td><code>md folder</code></td><td>Opens a folder picker to set the <em>MD source folder</em> — where Markdown files are stored. If the chosen folder already contains <code>.md</code> files, they are loaded into the tree automatically.</td></tr>
+  <tr><td><code>html folder</code></td><td>Opens a folder picker to set the <em>HTML export folder</em> — where generated HTML files will be written.</td></tr>
+  <tr><td><code>Export</code></td><td>Converts every <code>.md</code> file in the MD folder to HTML and writes it to the HTML folder, mirroring the folder structure. Also generates <code>index.html</code> at the root.</td></tr>
+  <tr><td><code>Open In Browser</code></td><td>Opens <code>index.html</code> from the HTML folder in the system default browser.</td></tr>
+  <tr><td><code>About</code></td><td>Shows the version number and author contact information.</td></tr>
+</table>
+
+<p>
+  After selecting either folder, its full path is shown in the info bar directly below the
+  toolbar buttons (<em>MD Source: …</em> and <em>HTML Export: …</em>). Paths are also saved
+  automatically to <code>md_storage_html.properties</code> and restored the next time the
+  application starts.
+</p>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="shortcuts">Keyboard Shortcuts</h2>
+<table>
+  <tr><th>Shortcut</th><th>Action</th></tr>
+  <tr><td><code>Ctrl+S</code></td><td>Save (same as clicking the Save button).</td></tr>
+  <tr><td><code>Ctrl+N</code></td><td>New file (same as clicking + File).</td></tr>
+  <tr><td><code>Delete</code></td><td>Delete the selected tree node (when the tree has focus).</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="filetree">Working with the File Tree (Left Pane)</h2>
+
+<h3>Index root</h3>
+<p>The root node is labelled <strong>Index</strong>. All files and folders live under it.</p>
+
+<h3>Adding a file</h3>
+<p>Click <strong>+ File</strong> below the tree, press <kbd>Ctrl+N</kbd>, or right-click any node and choose <em>Add File</em>.
+Enter a file name — the <code>.md</code> extension is added automatically if omitted.
+The new file is inserted under the currently selected folder (or the root if nothing is selected).</p>
+
+<h3>Adding a folder</h3>
+<p>Click <strong>+ Folder</strong> or right-click → <em>Add Folder</em>.
+Folders can be nested to any depth. Newly created folders display a system folder icon.</p>
+
+<h3>Renaming</h3>
+<p>Select a node, then click <strong>Rename</strong> or right-click → <em>Rename</em>.
+The current name is pre-filled. For files, the <code>.md</code> extension is preserved automatically.</p>
+
+<h3>Deleting</h3>
+<p>Select a node and click <strong>- Delete</strong>, press <kbd>Delete</kbd>, or right-click → <em>Delete</em>.
+A confirmation dialog is shown. Deleting a folder removes all its children from the tree and from memory.</p>
+
+<h3>Moving files (drag and drop)</h3>
+<p>File nodes can be dragged and dropped onto any folder node (or the Index root) to move them.
+The tree updates immediately and the title bar is marked with <code>*</code> to indicate unsaved changes.</p>
+
+<h3>Selecting a file</h3>
+<p>Click any file node to load its content into the right pane editor.</p>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="editing">Editing (Right Pane)</h2>
+<p>
+  The right pane is a plain text editor. Write standard Markdown syntax here.
+  Content is kept in memory until you click <strong>Save</strong>, which flushes everything to disk.
+</p>
+<div class="tip">
+  <strong>Tip:</strong> The currently open file's content is automatically flushed to memory
+  before Save writes to disk, so you do not need to click away first.
+</div>
+<div class="note">
+  <strong>Unsaved changes:</strong> Whenever the editor content is modified, the window title
+  gains a <code>*</code> suffix (e.g. <em>md_storage_html *</em>). The asterisk is cleared
+  after a successful Save.
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="loading">Loading an Existing Folder</h2>
+<p>
+  Click <strong>md folder</strong> and select a directory that already contains
+  <code>.md</code> files and sub-folders. The tree is rebuilt from disk automatically,
+  preserving the original hierarchy. Only <code>.md</code> files are loaded; other file types
+  are ignored.
+</p>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="exporting">Exporting to HTML</h2>
+<ol>
+  <li>Set the <strong>md folder</strong> (source).</li>
+  <li>Set the <strong>html folder</strong> (destination).</li>
+  <li>Click <strong>Export</strong>.</li>
+</ol>
+<p>The exporter:</p>
+<ul>
+  <li>Mirrors the source folder tree inside the HTML folder.</li>
+  <li>Converts each <code>.md</code> file to a fully self-contained <code>.html</code> page.</li>
+  <li>Generates <code>index.html</code> at the root of the HTML folder — a two-pane app with a
+      collapsible sidebar showing the folder/file tree on the left and an iframe displaying the
+      selected page on the right.</li>
+</ul>
+
+<h3>Supported Markdown syntax</h3>
+<table>
+  <tr><th>Syntax</th><th>Output</th></tr>
+  <tr><td><code># H1</code> … <code>###### H6</code></td><td>Headings</td></tr>
+  <tr><td><code>***bold+italic***</code>, <code>**bold**</code>, <code>*italic*</code>, <code>~~strikethrough~~</code></td><td>Inline formatting</td></tr>
+  <tr><td><code>`inline code`</code></td><td>Inline code</td></tr>
+  <tr><td>Triple backtick fences</td><td>Code blocks</td></tr>
+  <tr><td><code>- item</code> / <code>* item</code></td><td>Unordered list</td></tr>
+  <tr><td><code>1. item</code></td><td>Ordered list</td></tr>
+  <tr><td><code>&gt; text</code></td><td>Blockquote</td></tr>
+  <tr><td><code>---</code></td><td>Horizontal rule</td></tr>
+  <tr><td><code>[text](url)</code></td><td>Hyperlink</td></tr>
+  <tr><td><code>![alt](url)</code></td><td>Image</td></tr>
+  <tr><td><code>| col | col |</code> (pipe tables)</td><td>Table</td></tr>
+</table>
+
+<h3>HTML font size</h3>
+<p>
+  The body font size of exported HTML pages is controlled by the
+  <code>html.font.size</code> property in <code>md_storage_html.properties</code>.
+  The default is <code>20</code> (px). Edit the value and re-run Export to apply it.
+</p>
+<pre>html.font.size=20</pre>
+
+<p>The exported HTML is <strong>mobile-responsive</strong> — it uses a viewport meta tag,
+fluid layout, and a <code>max-width: 600px</code> media query to adjust font sizes on small screens.</p>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="config">Configuration File</h2>
+<p>
+  Settings are stored in <code>md_storage_html.properties</code> in the same directory as the
+  application. The file is created automatically on first use.
+</p>
+<table>
+  <tr><th>Key</th><th>Description</th></tr>
+  <tr><td><code>md.folder</code></td><td>Absolute path to the Markdown source folder.</td></tr>
+  <tr><td><code>html.folder</code></td><td>Absolute path to the HTML export folder.</td></tr>
+  <tr><td><code>html.font.size</code></td><td>Base font size (px) for exported HTML pages. Default: <code>20</code>.</td></tr>
+</table>
+
+<div class="note">
+  <strong>Note:</strong> The properties file is read at startup and written automatically
+  whenever you change either folder. You can also edit it manually while the application is closed.
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="contact">Contact</h2>
+<p>by : <a href="mailto:arun.ramasamy@gmail.com">arun.ramasamy@gmail.com</a></p>
+
+</div><!-- #content -->
+
+<script>
+  // Highlight the active TOC link as the user scrolls
+  var headings = document.querySelectorAll('#content h2[id]');
+  var links    = document.querySelectorAll('#sidebar nav a');
+
+  function onScroll() {
+    var scrollTop = document.getElementById('content').scrollTop + 80;
+    var current   = headings[0] ? headings[0].id : '';
+    headings.forEach(function(h) {
+      if (h.offsetTop <= scrollTop) current = h.id;
+    });
+    links.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  }
+
+  document.getElementById('content').addEventListener('scroll', onScroll);
+  onScroll();
+
+  // Smooth-scroll within #content when a TOC link is clicked
+  links.forEach(function(a) {
+    a.addEventListener('click', function(e) {
+      var target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+
+  function hideSidebar() {
+    document.getElementById('sidebar').style.display = 'none';
+    document.getElementById('show-btn').style.display = 'block';
+  }
+  function showSidebar() {
+    document.getElementById('sidebar').style.display = 'flex';
+    document.getElementById('show-btn').style.display = 'none';
+  }
+</script>
+
+</body>
+</html>
